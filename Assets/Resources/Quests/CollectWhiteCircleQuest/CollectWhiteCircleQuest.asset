@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae98d900e15594b9296371f4899162fe, type: 3}
+  m_Name: CollectWhiteCircleQuest
+  m_EditorClassIdentifier: 
+  <Id>k__BackingField: CollectWhiteCircleQuest
+  DisplayName: What is White Circle?
+  Description: Collect one white circle
+  QuestPrerequisites: []
+  QuestStepPrefabs:
+  - {fileID: 1076127637124646872, guid: d8182cdd65d68465caaed8e4d2db9575, type: 3}
+  Reward: 10

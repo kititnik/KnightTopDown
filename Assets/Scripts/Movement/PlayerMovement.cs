@@ -5,16 +5,20 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private float moveSpeed;
+    [SerializeField] private float movementSpeed;
     private Rigidbody2D _rb;
     private Vector2 movement;
     private Animator _animator;
+    private bool _canMove = true;
 
     private void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
     }
+
+    public void StopMovement() => _canMove = false;
+    public void ResumeMovement() => _canMove = true;
 
     private void Update()
     {
@@ -32,6 +36,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        _rb.MovePosition(_rb.position + movement * moveSpeed * Time.fixedDeltaTime);
+        if(!_canMove) return;
+        _rb.MovePosition(_rb.position + movement * movementSpeed * Time.fixedDeltaTime);
     }
 }
