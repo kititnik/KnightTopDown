@@ -36,14 +36,23 @@ public class QuestPoint : MonoBehaviour, IInteractable
     {
         if(currentQuestState == QuestState.CanStart && startPoint)
         {
-            interactionUI.SetText(interactionUI.TextOnTop, questInfoForPont.DisplayName, 5f);
             interactionUI.SetText(interactionUI.RichTextOnTop, questInfoForPont.Description, 5f);
             EventsManager.instance.QuestEvents.StartQuest(questId);
         }
         else if(currentQuestState == QuestState.CanFinish && finishPoint)
         {
             interactionUI.SetText(interactionUI.TextOnTop, "Quest finished: " + questInfoForPont.DisplayName, 3f);
-            EventsManager.instance.QuestEvents.FinishQuest(questId);
+            EventsManager.instance.QuestEvents.FinishQuest(questId, transform.position);
         }
+    }
+
+    public void OnNearObject(GameObject player, InteractionUI interactionUI)
+    {
+        interactionUI.SetText(interactionUI.TextOnTop, questInfoForPont.DisplayName);
+    }
+
+    public void OnExitedObject(GameObject player, InteractionUI interactionUI)
+    {
+        interactionUI.RemoveText(interactionUI.TextOnTop, questInfoForPont.DisplayName);
     }
 }

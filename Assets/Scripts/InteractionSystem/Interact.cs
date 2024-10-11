@@ -8,25 +8,28 @@ public class Interact : MonoBehaviour
 {
     [SerializeField] private GameObject interactiveBtn;
     [SerializeField] private InteractionUI interactionUI;
-    private IInteractable interactable;
+    private IInteractable _interactable;
     private void OnTriggerEnter2D(Collider2D collider2D)
     {
         var newCollision = collider2D.GetComponent<IInteractable>();
         if(newCollision == null) return;
-        interactable = newCollision;
+        _interactable = newCollision;
         interactiveBtn.SetActive(true);
+        _interactable.OnNearObject(gameObject, interactionUI);
     }
     private void OnTriggerExit2D(Collider2D collider2D)
     {
-        if(collider2D.GetComponent<IInteractable>() == null) return;
+        var interactable = collider2D.GetComponent<IInteractable>();
+        if(interactable == null) return;
+        interactable.OnExitedObject(gameObject, interactionUI);
         if(interactiveBtn!=null) interactiveBtn.SetActive(false);
-        interactable = null;
+        _interactable = null;
     }
 
     public void Send()
     {
-        if(interactable == null) return;
+        if(_interactable == null) return;
         interactiveBtn.SetActive(false);
-        interactable.Invoke(gameObject, interactionUI);
+        _interactable.Invoke(gameObject, interactionUI);
     }
 }

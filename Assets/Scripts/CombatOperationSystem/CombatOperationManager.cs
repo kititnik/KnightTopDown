@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,7 +9,9 @@ public class CombatOperationManager : MonoBehaviour
     [SerializeField] private Transform[] spawnPoints;
     [SerializeField] private float minDelayBetweenOperations;
     [SerializeField] private float maxDelayBetweenOperations;
-    [SerializeField] private bool isActiveOperation = false;
+    [SerializeField] private float maxDifficulty;
+    [SerializeField] private float difficultyMultiplier;
+    private float currentDifficulty=1;
 
     private void Start()
     {
@@ -19,17 +22,16 @@ public class CombatOperationManager : MonoBehaviour
     {
         while(true)
         {
-            float delay = Random.Range(minDelayBetweenOperations, maxDelayBetweenOperations);
+            float delay = UnityEngine.Random.Range(minDelayBetweenOperations, maxDelayBetweenOperations);
             yield return new WaitForSeconds(delay);
-            int currentOperationIndex = Random.Range(0, combatOperations.Length);
-            int spawnPointIndex = Random.Range(0, spawnPoints.Length);
+            int currentOperationIndex = UnityEngine.Random.Range(0, combatOperations.Length);
             GameObject operation = Instantiate(combatOperations[currentOperationIndex], gameObject.transform);
-            operation.GetComponent<ICombatOperation>().StartOperation(OnOperationEnded, spawnPoints[spawnPointIndex]);
+            operation.GetComponent<ICombatOperation>().StartOperation(currentDifficulty, OnOperationEnded, spawnPoints);
         }
     }
 
     private void OnOperationEnded()
     {
-        isActiveOperation = false;
+        currentDifficulty = Math.Min(maxDifficulty, currentDifficulty*difficultyMultiplier);
     }
 }

@@ -1,6 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using NavMeshPlus.Components;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -8,22 +11,26 @@ using UnityEngine.AI;
 public class StalkingMovement : MonoBehaviour
 {
     [SerializeField] private string[] stalkingTags;
+    [SerializeField] private float speed;
+    private MovementAI _movementAI;
     private Transform stalkingTarget;
     private bool _canMove = true;
     private Vector2 _lastPos;
     private Rigidbody2D _rigidbody2D;
     private Animator _animator;
     private NavMeshAgent _navMeshAgent;
+    private bool isMovingByAI = true;
+    private Vector2 moveToPos;
 
     private void Awake()
     {
-        StartCoroutine(UpdateTargetCoroutine());
-        //stalkingTarget = GameObject.FindGameObjectWithTag("Player").transform;
+        _movementAI = GetComponent<MovementAI>();
         _rigidbody2D = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
         _navMeshAgent = GetComponent<NavMeshAgent>();
         _navMeshAgent.updateRotation = false;
         _navMeshAgent.updateUpAxis = false;
+        StartCoroutine(UpdateTargetCoroutine());
         StartCoroutine(UpdateNavMesh());
     }
 
@@ -32,39 +39,22 @@ public class StalkingMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Move();
+        if(isMovingByAI) MoveWithNavMesh();
+        else MoveToPosition(moveToPos);
     }
 
-    private void UpdateTarget()
+    public void SetObjectToGoToPosition(Vector2 pos)
     {
-        List<Transform> cheasableObjects = new List<Transform>();
-        foreach(var targetTag in stalkingTags)
-        {
-            GameObject[] targets = GameObject.FindGameObjectsWithTag(targetTag);
-            foreach(var target in targets)
-            {
-                cheasableObjects.Add(target.transform);
-            }
-        }
-        float minDistance = Mathf.Infinity;
-        Transform nearestTarget = null;
-        foreach(var target in cheasableObjects)
-        {
-            float dist = Vector2.Distance(target.position, transform.position);
-            if(dist < minDistance)
-            {
-                nearestTarget = target;
-                minDistance = dist;
-            }
-        }
-        stalkingTarget = nearestTarget;
+        _navMeshAgent.enabled = false;
+        isMovingByAI = false;
+        moveToPos = pos;
     }
 
     private IEnumerator UpdateNavMesh()
     {
-        while(true)
+        while(gameObject != null)
         {
-            if(stalkingTarget != null)
+            if(isMovingByAI)
             {
                 _navMeshAgent.SetDestination(stalkingTarget.position);
             }
@@ -74,18 +64,30 @@ public class StalkingMovement : MonoBehaviour
 
     private IEnumerator UpdateTargetCoroutine()
     {
-        while(true)
+        while(_movementAI != null)
         {
-            UpdateTarget();
+            stalkingTarget = _movementAI.UpdateTarget(stalkingTags);
             yield return new WaitForSeconds(5f);
         }
     }
 
-    private void Move()
+    private void MoveToPosition(Vector2 position)
+    {
+        var pos = Vector2.MoveTowards(transform.position, position, speed * Time.fixedDeltaTime);
+        _rigidbody2D.MovePosition(pos);
+        if(Vector2.Distance(transform.position, position) < 0.01)
+        {
+            _navMeshAgent.enabled = true;
+            isMovingByAI = true;
+        }
+    }
+
+    private void MoveWithNavMesh()
     {
         if(stalkingTarget == null)
         {
-            UpdateTarget();
+            stalkingTarget = _movementAI.UpdateTarget(stalkingTags);
+            UpdateNavMesh();
         }
         bool shouldMove = _canMove && 
                             stalkingTarget != null;
@@ -96,14 +98,14 @@ public class StalkingMovement : MonoBehaviour
         }
         Vector2 direction = _rigidbody2D.position - _lastPos;
         direction.Normalize();
-        
+        Flip(direction);
         if(direction != Vector2.zero)
         {
             _animator.SetBool("isMoving", true);
             _animator.SetFloat("moveX", direction.x);
             _animator.SetFloat("moveY", direction.y);
         }
-        else 
+        else
         {
             _animator.SetBool("isMoving", false);
             Vector2 toTargetDirection = (Vector2)stalkingTarget.position - _rigidbody2D.position;
@@ -111,6 +113,15 @@ public class StalkingMovement : MonoBehaviour
             _animator.SetFloat("moveX", toTargetDirection.x);
             _animator.SetFloat("moveY", toTargetDirection.y);
         }
-        _lastPos = transform.position;
+        _lastPos = transform.position;        
+    }
+
+    private void Flip(Vector2 direction)
+    {
+        if(direction.x > 0 && transform.localScale.x < 0 ||
+            direction.x < 0 && transform.localScale.x > 0) 
+        {
+            transform.localScale = new Vector3(transform.localScale.x*-1, transform.localScale.y, transform.localScale.z);
+        }
     }
 }

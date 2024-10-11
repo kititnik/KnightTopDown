@@ -3,18 +3,26 @@ using UnityEngine.Events;
 
 public class Health : MonoBehaviour, IDamageable
 {
-    [SerializeField] private float health;
-    [SerializeField] private UnityEvent onBroken;
+    [SerializeField] protected float maxHealth;
+    [SerializeField] public UnityEvent OnBroken;
+    [SerializeField] private Reward reward;
+    private float health;
 
-    public void GetDamage(float damage)
+    private void Awake()
+    {
+        health = maxHealth;
+    }
+
+    public virtual void GetDamage(float damage)
     {
         health -= damage;
-        Debug.Log(gameObject.name + " got damage: " + damage +  ". Current health: " + health);
+        //Debug.Log(gameObject.name + " got damage: " + damage +  ". Current health: " + health);
         if(health <= 0) Death();
     }
-    public void Death()
+    public virtual void Death()
     {
         Destroy(gameObject);
-        onBroken?.Invoke();
+        OnBroken?.Invoke();
+        reward.GetFullReward(transform.position);
     }
 }

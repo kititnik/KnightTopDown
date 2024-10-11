@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Upgradable : MonoBehaviour, IInteractable
+public class Upgradable : MonoBehaviour, IInteractable, IWorkingPoint
 {
     [SerializeField] private GameObject buildingObject;
     [SerializeField] private Sprite startingSprite;
@@ -20,9 +20,12 @@ public class Upgradable : MonoBehaviour, IInteractable
     private bool _isProcessing = false;
     private float _survivingPercentage = 100f;
     private int _currentLevel;
+    private PawnManager _pawnManager;
+    private ConstructionTypes _constructionType;
 
     private void Awake()
     {
+        _pawnManager = FindObjectOfType<PawnManager>();
         if(isStartingFromNothing) _currentLevel = -1;
         else 
         {
@@ -33,11 +36,100 @@ public class Upgradable : MonoBehaviour, IInteractable
         }
     }
 
+    public void StartWork()
+    {
+        if(_constructionType == ConstructionTypes.Repair)
+        {
+            StartCoroutine(Repair());
+        }
+        else if(_constructionType == ConstructionTypes.Upgrade)
+        {
+            StartCoroutine(MoveToNextLevel());
+        }
+    }
+
+    public GameObject GetWorkingPlace()
+    {
+        return gameObject;
+    }
+
+    public WorkTypes GetWorkType()
+    {
+        return WorkTypes.Building;
+    }
+
+    public UnityEvent GetOnWorkEndedEvent()
+    {
+        return onUpgradeEnded;
+    }
+
     public void Invoke(GameObject player, InteractionUI interactionUI)
     {
         if(_isProcessing) return;
-        if(_needRepairing) StartCoroutine(Repair());
-        else if(CanUpgade()) StartCoroutine(MoveToNextLevel());
+        var inventoryHandler = player.GetComponent<InventoryHandler>();
+        if(inventoryHandler == null)
+        {
+            Debug.LogError("No InventoryHandler on player");
+            return;
+        }
+        if(_needRepairing)
+        {
+            var currentPrice = upgradeStages[_currentLevel].Price;
+            bool isAble = currentPrice.CheckPayingAbility(inventoryHandler);
+            if(isAble) 
+            {
+                currentPrice.TryTakePrice(inventoryHandler);
+                _constructionType = ConstructionTypes.Repair;
+                _pawnManager.FindWorker(this);
+            }
+            else interactionUI.AddNoification("Not enought resources", 3f);
+        }
+        else if(CanUpgade())
+        {
+            var currentPrice = upgradeStages[_currentLevel+1].Price;
+            bool isAble = currentPrice.CheckPayingAbility(inventoryHandler);
+            if(isAble) 
+            {
+                currentPrice.TryTakePrice(inventoryHandler);
+                _constructionType = ConstructionTypes.Upgrade;
+                _pawnManager.FindWorker(this);
+            }
+            else interactionUI.AddNoification("Not enought resources", 3f);
+        }
+        else
+        {
+            interactionUI.AddNoification("Nothing to upgrade", 3f);
+        }
+    }
+
+    public void OnExitedObject(GameObject player, InteractionUI interactionUI)
+    {
+        interactionUI.RemoveText(interactionUI.TextOnTop, gameObject.name);
+        if(_needRepairing)
+        {
+            var currentPrice = upgradeStages[_currentLevel].Price;
+            interactionUI.RemoveText(interactionUI.RichTextOnTop, currentPrice.ToString());
+        }
+        else if(CanUpgade())
+        {
+            var currentPrice = upgradeStages[_currentLevel+1].Price;
+            interactionUI.RemoveText(interactionUI.RichTextOnTop, currentPrice.ToString());
+        }
+    }
+
+    public void OnNearObject(GameObject player, InteractionUI interactionUI)
+    {
+        interactionUI.SetText(interactionUI.TextOnTop, gameObject.name);
+        if(_needRepairing)
+        {
+            var currentPrice = upgradeStages[_currentLevel].Price;
+            interactionUI.SetText(interactionUI.RichTextOnTop, currentPrice.ToString());
+        }
+        else if(CanUpgade())
+        {
+            var currentPrice = upgradeStages[_currentLevel+1].Price;
+            interactionUI.SetText(interactionUI.RichTextOnTop, currentPrice.ToString());
+        }
     }
 
     private bool CanUpgade()
@@ -48,7 +140,7 @@ public class Upgradable : MonoBehaviour, IInteractable
     public void BreakBuilding()
     {
         Destroy(_building);
-        buildingObject.GetComponent<SpriteRenderer>().sprite = upgradeStages[_currentLevel].BuildingStages[0];
+        buildingObject.GetComponent<SpriteRenderer>().sprite = startingSprite;
         buildingObject.SetActive(true);
         _isBroken = true;
     }
@@ -113,7 +205,13 @@ public class Upgradable : MonoBehaviour, IInteractable
         public GameObject Building;
         public Sprite[] BuildingStages;
         public float TimeToUpgade;
-        public float Price;
+        public Price Price;
 
+    }
+
+    enum ConstructionTypes
+    {
+        Repair, 
+        Upgrade
     }
 }

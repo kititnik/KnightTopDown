@@ -11,9 +11,9 @@ public class InventoryHandler : MonoBehaviour
         _inventory = new Inventory(inventorySize);
     }
     
-    public bool AddItem(int itemId)
+    public bool AddItem(int itemId, int count)
     {
-        bool success = _inventory.AddItem(itemId);
+        bool success = _inventory.AddItem(itemId, count);
         if(success) NotifyObservers(itemId, InventoryEvent.AddItem);
         return success;
     }

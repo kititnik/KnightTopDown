@@ -6,10 +6,11 @@ using UnityEngine;
 public class TestCombatOperation : MonoBehaviour, ICombatOperation
 {
     [SerializeField] private GameObject enemy;
-    public bool StartOperation(Action onOperationEnded, Transform spawnPoint)
+    public bool StartOperation(float difficulty, Action onOperationEnded, Transform[] spawnPoints)
     {
         Debug.Log("Test operation started");
-        Instantiate(enemy, spawnPoint.transform.position, Quaternion.identity);
+        int spawnPointIndex = UnityEngine.Random.Range(0, spawnPoints.Length);
+        Instantiate(enemy, spawnPoints[spawnPointIndex].transform.position, Quaternion.identity);
         return true;
     }
 }

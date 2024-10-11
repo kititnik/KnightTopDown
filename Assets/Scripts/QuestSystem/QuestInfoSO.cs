@@ -10,7 +10,7 @@ public class QuestInfoSO : ScriptableObject
     public string Description;
     public QuestInfoSO[] QuestPrerequisites;
     public GameObject[] QuestStepPrefabs;
-    public int Reward;
+    public Reward Reward;
 
     private void OnValidate()
     {

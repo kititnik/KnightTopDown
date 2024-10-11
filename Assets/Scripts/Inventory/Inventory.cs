@@ -43,11 +43,11 @@ public class Inventory : IEnumerable
         return true;
     }
 
-    public bool AddItem(int itemId)
+    public bool AddItem(int itemId, int count)
     {
         int i = FindItemIndex(itemId);
-        if(i == -1) _inventory.Add(new InventoryItem(itemId, 1));
-        else _inventory[i].Count++;
+        if(i == -1) _inventory.Add(new InventoryItem(itemId, count));
+        else _inventory[i].Count+=count;
         return true;
     }
 

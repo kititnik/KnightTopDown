@@ -4,12 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class BreakingHealth : MonoBehaviour, IDamageable
+public class BreakingHealth : Health
 {
-    [SerializeField] private float maxHealth;
     [SerializeField] private float damageResistance;
     [SerializeField] List<DamageStage> damageStages;
-    public UnityEvent onBroken;
     public UnityEvent<float> onStageDowngraded;
     private int _currentDamageStage;
     private float _health;
@@ -21,23 +19,24 @@ public class BreakingHealth : MonoBehaviour, IDamageable
         _collider = GetComponent<Collider2D>();
     }
 
-    public void GetDamage(float damage)
+    public override void GetDamage(float damage)
     {
-        if(_health <= 0) return;
+        if(_health < 0) return;
         _health -= damage - damageResistance;
         //Debug.Log(gameObject.name + " got damage: " + damage +  ". Current health: " + _health);
         if(_health*100.0/maxHealth <= damageStages[_currentDamageStage].Percentage)
         {
             gameObject.GetComponent<SpriteRenderer>().sprite = damageStages[_currentDamageStage].Sprite;
+            damageStages[_currentDamageStage].OnThisDamageStage?.Invoke();
             onStageDowngraded?.Invoke(damageStages[_currentDamageStage].Percentage);
             _currentDamageStage++;
         }
         if(_health <= 0) Death();
     }
 
-    public void Death()
+    public override void Death()
     {
-        onBroken?.Invoke();
+        OnBroken?.Invoke();
     }
 
     [Serializable]
@@ -45,5 +44,6 @@ public class BreakingHealth : MonoBehaviour, IDamageable
     {
         public float Percentage;
         public Sprite Sprite;
+        public UnityEvent OnThisDamageStage;
     }
 }

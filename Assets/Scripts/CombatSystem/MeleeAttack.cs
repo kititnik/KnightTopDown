@@ -5,34 +5,29 @@ using UnityEngine.Events;
 
 public class MeleeAttack : MeleeDamager
 {
-    [SerializeField] private UnityEvent onAttackStarted;
-    [SerializeField] private UnityEvent onAttackEnded;
+    [SerializeField] private UnityEvent onAttack;
 
+    private Animator _animator;
     private Timer _attackDelayTimer;
     private float _attackDuration = 0.1f;
     private bool _canAttack = true;
-    private float _attackDelay = 1f;
+    private float _attackDelay = 2f;
     private float _swordDamage = 10;
 
 
     private void Awake()
     {
+        _animator = GetComponent<Animator>();
         _attackDelayTimer = new Timer(this);
         _attackDelayTimer.TimeIsOver += SetCanAttack; 
     }
 
-    private void Update()
-    {
-        if(_canAttack) StartCoroutine(Attack());
-    }
-
     private void SetCanAttack() => _canAttack = true;
     
-    public IEnumerator Attack()
+    public void Attack()
     {
-        onAttackStarted?.Invoke();
-        yield return new WaitForSeconds(_attackDuration);
-        onAttackEnded?.Invoke();
+        onAttack?.Invoke();
+        _animator.Play("Attacking");
         _canAttack = false;
         _attackDelayTimer.RestartTimer(_attackDelay);
     }
@@ -40,5 +35,12 @@ public class MeleeAttack : MeleeDamager
     public override float GetMeleeDamage()
     {
         return _swordDamage;
+    }
+
+    private void OnTriggerEnter2D(Collider2D col)
+    {
+        if(!_canAttack) return;
+        if(col.GetComponentInChildren<Hitbox>() == null) return;
+        Attack();
     }
 }

@@ -7,6 +7,7 @@ TagManager:
   - Barricade
   - Peaceful
   - Enemy
+  - Resource
   layers:
   - Default
   - TransparentFX
@@ -17,20 +18,20 @@ TagManager:
   - Weapon
   - Hitbox
   - Obstacle
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Friendly
+  - FriendyPassable
+  - LevelLayer0
+  - LevelLayer1
+  - LevelLayer2
+  - LevelLayer3
+  - EntityLayer0
+  - EntityLayer1
+  - EntityLayer2
+  - EntityLayer3
+  - BoundaryLevel0
+  - BoundaryLevel1
+  - BoundaryLevel2
+  - BoundaryLevel3
   - 
   - 
   - 

@@ -24,12 +24,17 @@ public class PlayerMovement : MonoBehaviour
     {
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
+
         movement.Normalize();
+
+        if(movement.x > 0 && transform.localScale.x < 0 ||
+            movement.x < 0 && transform.localScale.x > 0) Flip();
+
         if(movement != Vector2.zero)
         {
-            _animator.SetFloat("moveX", movement.x);
-            _animator.SetFloat("moveY", movement.y);
             _animator.SetBool("isMoving", true);
+            _animator.SetFloat("horizontal", movement.x);
+            _animator.SetFloat("vertical", movement.y);
         }
         else _animator.SetBool("isMoving", false);
     }
@@ -38,5 +43,10 @@ public class PlayerMovement : MonoBehaviour
     {
         if(!_canMove) return;
         _rb.MovePosition(_rb.position + movement * movementSpeed * Time.fixedDeltaTime);
+    }
+
+    private void Flip()
+    {
+        transform.localScale = new Vector3(transform.localScale.x*-1, transform.localScale.y, transform.localScale.z);
     }
 }

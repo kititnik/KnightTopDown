@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 public class QuestEvents
 {
@@ -12,10 +13,10 @@ public class QuestEvents
     {
         OnAdvanceQuest?.Invoke(id);
     }
-    public event Action<string> OnFinishQuest;
-    public void FinishQuest(string id)
+    public event Action<string, Vector2> OnFinishQuest;
+    public void FinishQuest(string id, Vector2 pos)
     {
-        OnFinishQuest?.Invoke(id);
+        OnFinishQuest?.Invoke(id, pos);
     }
 
     public event Action<Quest> OnQuestStateChange;

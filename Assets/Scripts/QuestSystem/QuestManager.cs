@@ -62,10 +62,11 @@ public class QuestManager : MonoBehaviour
         }
     }
 
-    private void FinishQuest(string id)
+    private void FinishQuest(string id, Vector2 pos)
     {
         Quest quest = GetQuestById(id);
         ChangeQuestState(quest.Info.Id, QuestState.Finished);
+        quest.Info.Reward.GetFullReward(pos);
         Debug.Log("Quest finished");
     }
 

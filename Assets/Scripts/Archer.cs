@@ -8,6 +8,7 @@ public class Archer : MonoBehaviour
     [SerializeField] private Collider2D attackRadius;
     [SerializeField] private GameObject arrow;
     [SerializeField] private float damage;
+    [SerializeField] private Transform bowPosition;
     private Animator _animator;
     private Timer _attackDelayTimer;
     private float _attackDelay = 2f;
@@ -36,17 +37,22 @@ public class Archer : MonoBehaviour
     {
         Vector2 direction = shootingPos - (Vector2)transform.position;
         direction.Normalize();
-        _animator.SetFloat("directionX", direction.x);
-        _animator.SetFloat("directionY", direction.y);
+        if(direction.x < 0 && gameObject.transform.localScale.x > 0 ||
+            direction.x > 0 && gameObject.transform.localScale.x < 0) Flip();
+    }
+
+    private void Flip()
+    {
+        var localScale = gameObject.transform.localScale;
+        gameObject.transform.localScale = new Vector3(localScale.x*-1, localScale.y, localScale.z);
     }
 
     private IEnumerator StrikeArrow(Vector2 shootingPos)
     {
-        Debug.Log("Shooting" + shootingPos);
-        _animator.Play("Attack");
+        _animator.Play("Shoot Diagonal Up");
         float length  = _animator.GetCurrentAnimatorStateInfo(0).length;
-        yield return new WaitForSeconds(length-0.5f);
-        GameObject go = Instantiate(arrow, transform.position, Quaternion.identity);
+        yield return new WaitForSeconds(length-0.1f);
+        GameObject go = Instantiate(arrow, bowPosition.position, Quaternion.identity);
         go.GetComponent<Arrow>().Init(shootingPos, damage);
     }
 

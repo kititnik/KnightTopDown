@@ -8,4 +8,14 @@ public class InteractableTest : MonoBehaviour, IInteractable
     {
         Debug.Log("Interaction with " + gameObject.name);
     }
+
+    public void OnExitedObject(GameObject player, InteractionUI interactionUI)
+    {
+        Debug.Log(gameObject.name + " exited");
+    }
+
+    public void OnNearObject(GameObject player, InteractionUI interactionUI)
+    {
+        Debug.Log(gameObject.name + " entered");
+    }
 }
