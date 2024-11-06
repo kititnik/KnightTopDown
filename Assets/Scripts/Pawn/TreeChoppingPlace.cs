@@ -8,6 +8,7 @@ public class TreeChoppingPlace : MonoBehaviour, IInteractable, IWorkingPoint
 {
     [SerializeField] private float damage;
     [SerializeField] private float intervalBetweenHits;
+    [SerializeField] private float workingPlaceOffset;
     private PawnManager _pawnManager;
     private UnityEvent _onWorkEnded;
     private Health _treeHealth;
@@ -36,6 +37,11 @@ public class TreeChoppingPlace : MonoBehaviour, IInteractable, IWorkingPoint
         return WorkTypes.Chopping;
     }
 
+    public float GetWorkingPlaceOffset()
+    {
+        return workingPlaceOffset;
+    }
+
     public void Invoke(GameObject player, InteractionUI interactionUI)
     {
         _pawnManager.FindWorker(this);
@@ -51,7 +57,7 @@ public class TreeChoppingPlace : MonoBehaviour, IInteractable, IWorkingPoint
         interactionUI.SetText(interactionUI.RichTextOnTop, "Tree");
     }
 
-    public void StartWork()
+    public void StartWork(Pawn pawn)
     {
         _treeHealth.OnBroken?.AddListener(EndWork);
         StartCoroutine(WorkingCo());

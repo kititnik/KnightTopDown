@@ -13,10 +13,10 @@ public class QuestEvents
     {
         OnAdvanceQuest?.Invoke(id);
     }
-    public event Action<string, Vector2> OnFinishQuest;
-    public void FinishQuest(string id, Vector2 pos)
+    public event Action<string, GameObject> OnFinishQuest;
+    public void FinishQuest(string id, GameObject questPoint)
     {
-        OnFinishQuest?.Invoke(id, pos);
+        OnFinishQuest?.Invoke(id, questPoint);
     }
 
     public event Action<Quest> OnQuestStateChange;

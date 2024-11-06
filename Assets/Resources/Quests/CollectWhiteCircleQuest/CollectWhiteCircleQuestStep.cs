@@ -11,7 +11,7 @@ public class CollectApplesQuestStep : QuestStep
 
     public override void Initialize()
     {
-        EventsManager.instance.InventoryEvents.onInventoryChange += OnInventoryUpdate;
+        EventsManager.instance.InventoryEvents.OnInventoryChange += OnInventoryUpdate;
         _inventoryHandler = FindAnyObjectByType<InventoryHandler>();
         itemsCollected = _inventoryHandler.GetItemCount(itemsId);
         if(itemsCollected >= itemsToComplete)
@@ -23,18 +23,18 @@ public class CollectApplesQuestStep : QuestStep
 
     private void OnDisable()
     {
-        EventsManager.instance.InventoryEvents.onInventoryChange -= OnInventoryUpdate;
+        EventsManager.instance.InventoryEvents.OnInventoryChange -= OnInventoryUpdate;
     }
 
-    public void OnInventoryUpdate(int itemId, InventoryEvent kind)
+    public void OnInventoryUpdate(int itemId, int count, InventoryEvent kind)
     {
         if(itemId == itemsId && kind == InventoryEvent.AddItem)
         {
-            itemsCollected++;
+            itemsCollected+=count;
         }
         if(itemId == itemsId && kind == InventoryEvent.RemoveItem)
         {
-            itemsCollected--;
+            itemsCollected-=count;
         }
         if(itemsCollected >= itemsToComplete)
         {

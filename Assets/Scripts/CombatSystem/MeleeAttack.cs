@@ -9,7 +9,6 @@ public class MeleeAttack : MeleeDamager
 
     private Animator _animator;
     private Timer _attackDelayTimer;
-    private float _attackDuration = 0.1f;
     private bool _canAttack = true;
     private float _attackDelay = 2f;
     private float _swordDamage = 10;
@@ -37,7 +36,7 @@ public class MeleeAttack : MeleeDamager
         return _swordDamage;
     }
 
-    private void OnTriggerEnter2D(Collider2D col)
+    private void OnTriggerStay2D(Collider2D col)
     {
         if(!_canAttack) return;
         if(col.GetComponentInChildren<Hitbox>() == null) return;

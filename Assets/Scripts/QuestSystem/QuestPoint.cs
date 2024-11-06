@@ -42,7 +42,7 @@ public class QuestPoint : MonoBehaviour, IInteractable
         else if(currentQuestState == QuestState.CanFinish && finishPoint)
         {
             interactionUI.SetText(interactionUI.TextOnTop, "Quest finished: " + questInfoForPont.DisplayName, 3f);
-            EventsManager.instance.QuestEvents.FinishQuest(questId, transform.position);
+            EventsManager.instance.QuestEvents.FinishQuest(questId, gameObject);
         }
     }
 

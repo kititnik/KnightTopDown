@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 public class PlayerCombat : MeleeDamager
 {
+    [SerializeField] private UnityEvent onAttacking;
     private Animator _animator;
     private Timer _attackDelayTimer;
     private bool _canAttack = true;
@@ -39,6 +41,7 @@ public class PlayerCombat : MeleeDamager
         _canAttack = false;
         _attackDelayTimer.StartTimer(_attackDelay);
         _animator.Play("Attacking");
+        onAttacking?.Invoke();
     }
 
     public override float GetMeleeDamage()

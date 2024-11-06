@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Health : MonoBehaviour, IDamageable
+public class Health : MonoBehaviour, 
+    IDamageable
 {
     [SerializeField] protected float maxHealth;
     [SerializeField] public UnityEvent OnBroken;
@@ -23,6 +24,7 @@ public class Health : MonoBehaviour, IDamageable
     {
         Destroy(gameObject);
         OnBroken?.Invoke();
-        reward.GetFullReward(transform.position);
+        int sortingOrder = gameObject.GetComponent<SpriteRenderer>().sortingOrder;
+        reward.GetFullReward(transform.position, sortingOrder);
     }
 }

@@ -128,8 +128,8 @@ ScriptedImporter:
   animatedSpriteImportData:
   - name: Fire_Frame_0
     originalName: 
-    pivot: {x: 0.5, y: -0.26136366}
-    alignment: 9
+    pivot: {x: 0.5, y: 0}
+    alignment: 7
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2
@@ -148,8 +148,8 @@ ScriptedImporter:
     uvTransform: {x: 68, y: 104}
   - name: Fire_Frame_1
     originalName: 
-    pivot: {x: 0.4923077, y: -0.27272728}
-    alignment: 9
+    pivot: {x: 0.5, y: 0}
+    alignment: 7
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2
@@ -168,8 +168,8 @@ ScriptedImporter:
     uvTransform: {x: 168, y: 4}
   - name: Fire_Frame_2
     originalName: 
-    pivot: {x: 0.49315068, y: -0.25274727}
-    alignment: 9
+    pivot: {x: 0.5, y: 0}
+    alignment: 7
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2
@@ -188,8 +188,8 @@ ScriptedImporter:
     uvTransform: {x: 87, y: 4}
   - name: Fire_Frame_3
     originalName: 
-    pivot: {x: 0.49333334, y: -0.25}
-    alignment: 9
+    pivot: {x: 0.5, y: 0}
+    alignment: 7
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2
@@ -208,8 +208,8 @@ ScriptedImporter:
     uvTransform: {x: 4, y: 4}
   - name: Fire_Frame_4
     originalName: 
-    pivot: {x: 0.5, y: -0.17346938}
-    alignment: 9
+    pivot: {x: 0.5, y: 0}
+    alignment: 7
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2
@@ -228,8 +228,8 @@ ScriptedImporter:
     uvTransform: {x: 4, y: 104}
   - name: Fire_Frame_5
     originalName: 
-    pivot: {x: 0.4791667, y: -0.14736843}
-    alignment: 9
+    pivot: {x: 0.5, y: 0}
+    alignment: 7
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2
@@ -248,8 +248,8 @@ ScriptedImporter:
     uvTransform: {x: 136, y: 104}
   - name: Fire_Frame_6
     originalName: 
-    pivot: {x: 0.46938774, y: -0.18681319}
-    alignment: 9
+    pivot: {x: 0.5, y: 0}
+    alignment: 7
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2

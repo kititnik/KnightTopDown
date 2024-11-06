@@ -5,22 +5,22 @@ using UnityEngine.AI;
 
 public class MovementAI : MonoBehaviour
 {
-    public Transform UpdateTarget(string[] stalkingTags)
+    public GameObject UpdateTarget(string[] stalkingTags)
     {
-        List<Transform> cheasableObjects = new List<Transform>();
+        var cheasableObjects = new List<GameObject>();
         foreach(var targetTag in stalkingTags)
         {
             GameObject[] targets = GameObject.FindGameObjectsWithTag(targetTag);
             foreach(var target in targets)
             {
-                cheasableObjects.Add(target.transform);
+                cheasableObjects.Add(target);
             }
         }
         float minDistance = Mathf.Infinity;
-        Transform nearestTarget = null;
+        GameObject nearestTarget = null;
         foreach(var target in cheasableObjects)
         {
-            float dist = Vector2.Distance(target.position, transform.position);
+            float dist = Vector2.Distance(target.transform.position, transform.position);
             if(dist < minDistance)
             {
                 nearestTarget = target;

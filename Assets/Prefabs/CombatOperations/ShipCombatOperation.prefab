@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6028147828387580082
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 942238858766528591}
+  - component: {fileID: 5056355529974068139}
+  m_Layer: 0
+  m_Name: ShipCombatOperation
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &942238858766528591
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6028147828387580082}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5056355529974068139
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6028147828387580082}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8f9ae059c2d546c79e16f9e9d5a7941, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ship: {fileID: 965611499106932344, guid: 8c470d8018a24478a971c0fc0851d04c, type: 3}
+  placesToSpawnShip:
+  - {x: 40, y: 15}
+  - {x: 40, y: 5}
+  - {x: 40, y: -5}
+  - {x: 40, y: -15}
+  - {x: 25, y: -15}
+  - {x: 10, y: -15}
+  - {x: -5, y: -15}
+  - {x: -20, y: -15}
+  - {x: -20, y: -5}
+  - {x: -20, y: 5}
+  - {x: -20, y: 15}
+  - {x: -5, y: 15}
+  - {x: 10, y: 15}
+  - {x: 20, y: 15}
+  - {x: 40, y: 15}
+  enemies:
+  - {fileID: 1883673832957830544, guid: 03b0b5f111ffb4c6a9c42450ea6bb603, type: 3}
+  startEnemiesCount: 1
+  startMaxAllowedEnemyExclusive: 1
+  enemiesDifficultyMultiplier: 0.5
+  enemiesCountMultiplier: 1.5

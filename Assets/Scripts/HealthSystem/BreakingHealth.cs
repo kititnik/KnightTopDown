@@ -29,7 +29,7 @@ public class BreakingHealth : Health
             gameObject.GetComponent<SpriteRenderer>().sprite = damageStages[_currentDamageStage].Sprite;
             damageStages[_currentDamageStage].OnThisDamageStage?.Invoke();
             onStageDowngraded?.Invoke(damageStages[_currentDamageStage].Percentage);
-            _currentDamageStage++;
+            if(_currentDamageStage < damageStages.Count-1) _currentDamageStage++;
         }
         if(_health <= 0) Death();
     }

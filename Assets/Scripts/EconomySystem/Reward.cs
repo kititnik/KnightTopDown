@@ -12,15 +12,15 @@ public class Reward
     /// <summary>
     /// Spawns items near position
     /// </summary>
-    public void GetFullReward(Vector2 pos, bool randomize=true)
+    public void GetFullReward(Vector2 pos, int orderInLayer, bool randomize=true)
     {
         foreach(var item in items)
         {
             float x = UnityEngine.Random.Range(-1, 1);
             float y = UnityEngine.Random.Range(-1, 1);
             Vector2 offset = new Vector2(x, y);
-            var go = GameObject.Instantiate(item.Item, pos+offset, Quaternion.identity);
-            go.SetItemCount(item.Count);
+            var go = ExtentionMethods.InstantiateWithSortingOrder(item.Item.gameObject, pos, orderInLayer);
+            go.GetComponent<Item>().SetItemCount(item.Count);
         }
     }
 

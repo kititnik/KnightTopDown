@@ -14,14 +14,14 @@ public class InventoryHandler : MonoBehaviour
     public bool AddItem(int itemId, int count)
     {
         bool success = _inventory.AddItem(itemId, count);
-        if(success) NotifyObservers(itemId, InventoryEvent.AddItem);
+        if(success) NotifyObservers(itemId, count, InventoryEvent.AddItem);
         return success;
     }
 
     public bool RemoveItem(int itemId)
     {
         bool success = _inventory.RemoveItem(itemId);
-        if(success) NotifyObservers(itemId, InventoryEvent.RemoveItem);
+        if(success) NotifyObservers(itemId, 1, InventoryEvent.RemoveItem);
         return success;
     }
 
@@ -32,6 +32,7 @@ public class InventoryHandler : MonoBehaviour
             bool success = _inventory.RemoveItem(itemId);
             if(!success) return false;  
         }
+        NotifyObservers(itemId, count, InventoryEvent.RemoveItem);
         return true;
     }
 
@@ -40,8 +41,8 @@ public class InventoryHandler : MonoBehaviour
         return _inventory.GetItemCount(itemId);
     }
 
-    private void NotifyObservers(int itemId, InventoryEvent kind)
+    private void NotifyObservers(int itemId, int count, InventoryEvent kind)
     {
-        EventsManager.instance.InventoryEvents.InventoryChange(itemId, kind);
+        EventsManager.instance.InventoryEvents.InventoryChange(itemId, count, kind);
     }
 }

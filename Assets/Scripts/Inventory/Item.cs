@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Item : MonoBehaviour
@@ -17,6 +18,7 @@ public class Item : MonoBehaviour
     }
 
     [SerializeField] private string displayName;
+
     public string DisplayName
     {
         get { return displayName; }

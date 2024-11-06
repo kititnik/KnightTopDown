@@ -1,17 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Events;
 
 public class PawnMovement : MonoBehaviour
 {
     [SerializeField] private float _goingToWorkSpeed;
     [SerializeField] private float _walkingSpeed;
+    private NavMeshAgent _navMeshAgent;
     private Animator _animator;
     private Pawn _pawn;
-    private Vector2 _workingPointPos;
+    private Vector2 _currentTargetPosition;
     private UnityEvent _onCameToPoint;
-    private float offset = 1f;
+    private UnityEvent _onCameToHouse;
+    private float _offset;
     private float _timeToChangeRandomDirection = 0;
     private float _timeToStayOnRandomPlace = 0;
     private Vector2 _randomDirection;
@@ -20,26 +23,72 @@ public class PawnMovement : MonoBehaviour
     {
         _animator = GetComponent<Animator>();
         _pawn = GetComponent<Pawn>();
+        _navMeshAgent = GetComponent<NavMeshAgent>();
+        _navMeshAgent.updateRotation = false;
+        _navMeshAgent.updateUpAxis = false; 
+        _navMeshAgent.enabled = false;
+        StartCoroutine(UpdateNavMeshCo());
     }
 
-    public UnityEvent GoToWorkInit(Vector2 workingPointPos)
+    public UnityEvent GoToWorkInit(Vector2 workingPointPos, float workingPlaceOffset)
     {
-        _workingPointPos = workingPointPos;
+        _currentTargetPosition = workingPointPos;
+        _offset = workingPlaceOffset;
         _animator.Play("Run");
+        _navMeshAgent.enabled = true;
+        UpdateNavMesh();
         _onCameToPoint = new UnityEvent();
         return _onCameToPoint;
     }
 
-    private void GoingToWork()
+    public UnityEvent RunningFromEnemyInit(Vector2 housePos)
     {
-        if(_workingPointPos == null) return;
-        transform.position = Vector2.MoveTowards(transform.position, _workingPointPos, _goingToWorkSpeed * Time.deltaTime);
-        Vector2 direction = _workingPointPos - (Vector2)transform.position;
+        _currentTargetPosition = housePos;
+        _animator.Play("Run");
+        _onCameToHouse = new UnityEvent();
+        return _onCameToHouse;
+    }
+
+    private IEnumerator UpdateNavMeshCo()
+    {
+        while(gameObject)
+        {
+            UpdateNavMesh();
+            yield return new WaitForSeconds(.3f);
+        }
+    }
+    private void UpdateNavMesh()
+    {
+        if(_navMeshAgent.enabled)
+        {
+            _navMeshAgent.SetDestination(_currentTargetPosition);
+        }
+    }
+
+    private void RunningFromEnemy()
+    {
+        if(_currentTargetPosition == Vector2.zero) return;
+        Vector2 direction = _currentTargetPosition - (Vector2)transform.position;
         direction.Normalize();
         Flip(direction);
-        if(Vector2.Distance(transform.position, _workingPointPos) <= offset)
+        if(Vector2.Distance(transform.position, _currentTargetPosition) <= 1.2f)
+        {
+            _onCameToHouse?.Invoke();
+            _navMeshAgent.enabled = false;
+        }
+    }
+
+    private void GoingToWork()
+    {
+        if(_currentTargetPosition == Vector2.zero) return;
+        //transform.position = Vector2.MoveTowards(transform.position, _workingPointPos, _goingToWorkSpeed * Time.deltaTime);
+        Vector2 direction = _currentTargetPosition - (Vector2)transform.position;
+        direction.Normalize();
+        Flip(direction);
+        if(Vector2.Distance(transform.position, _currentTargetPosition) <= _offset)
         {
             _onCameToPoint?.Invoke();
+            _navMeshAgent.enabled = false;
         }
     }
 
@@ -48,17 +97,16 @@ public class PawnMovement : MonoBehaviour
         if(_timeToStayOnRandomPlace > 0) _timeToStayOnRandomPlace -= Time.deltaTime;
         else if(_timeToStayOnRandomPlace <= 0 && _timeToChangeRandomDirection <= 0)
         {
-            _timeToChangeRandomDirection = Random.Range(1, 2);
+            _timeToChangeRandomDirection = Random.Range(4, 8);
             int x = Random.Range(-1, 2);
             int y = Random.Range(-1, 2);
             _randomDirection = new Vector2(x, y);
-            _randomDirection.Normalize();
             Flip(_randomDirection);
             _animator.Play("Run");
         }
         else if(_timeToChangeRandomDirection > 0)
         {
-            transform.position += (Vector3)_randomDirection * Time.deltaTime * _walkingSpeed;
+            transform.position += (Vector3)_randomDirection * (Time.deltaTime * _walkingSpeed);
             _timeToChangeRandomDirection -= Time.deltaTime;
             if(_timeToChangeRandomDirection <= 0)
             {
@@ -80,6 +128,7 @@ public class PawnMovement : MonoBehaviour
     public void Update()
     {
         if(_pawn.GetPawnState() == PawnState.GoingToWork) GoingToWork();
-        else if(_pawn.GetPawnState() == PawnState.Walking || _pawn.GetPawnState() == PawnState.Free) MovingAround();
+        //else if(_pawn.GetPawnState() == PawnState.Walking || _pawn.GetPawnState() == PawnState.Free) MovingAround();
+        else if(_pawn.GetPawnState() == PawnState.RunningFromEnemy) RunningFromEnemy();
     }
 }

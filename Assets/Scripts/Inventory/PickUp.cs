@@ -1,9 +1,11 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(InventoryHandler))]
 public class PickUp : MonoBehaviour
 {
+    [SerializeField] private UnityEvent onPickedUp;
     private InventoryHandler _inventory;
     private InteractionUI _interactionUI;
 
@@ -20,5 +22,6 @@ public class PickUp : MonoBehaviour
         _inventory.AddItem(itemComponent.Id, itemComponent.Count);
         _interactionUI.AddNoification($"{itemComponent.DisplayName} x{itemComponent.Count}", 4f);
         itemComponent.OnPickUp();
+        onPickedUp?.Invoke();
     }
 }

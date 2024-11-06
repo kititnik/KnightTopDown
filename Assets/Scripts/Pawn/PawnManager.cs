@@ -6,13 +6,13 @@ public class PawnManager : MonoBehaviour
 {
     [SerializeField] private Pawn[] pawns;
 
-    private void Start()
-    {
-        pawns = FindObjectsOfType<Pawn>();
-    }
-
     public void FindWorker(IWorkingPoint work)
     {
-        pawns[0].AssignWork(work);
+        foreach(var pawn in pawns)
+        {
+            if(pawn.GetPawnState() != PawnState.Walking) continue;
+            pawn.AssignWork(work);
+            return;
+        }
     }
 }
