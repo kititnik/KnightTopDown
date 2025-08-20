@@ -6,7 +6,7 @@ using UnityEngine.Serialization;
 public class ItemsDisplay : MonoBehaviour
 {
     [SerializeField] private ItemsDisplayElement[] itemsDisplayElements;
-    private void Start()
+    private void Awake()
     {
         EventsManager.instance.InventoryEvents.OnInventoryChange += OnInventoryUpdate;
     }

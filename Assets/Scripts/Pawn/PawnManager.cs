@@ -6,7 +6,7 @@ public class PawnManager : MonoBehaviour
 {
     [SerializeField] private Pawn[] pawns;
 
-    public void FindWorker(IWorkingPoint work)
+    public void FindWorker(WorkingPoint work)
     {
         foreach(var pawn in pawns)
         {

@@ -5,16 +5,15 @@ using System.Data;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
-public class Upgradable : MonoBehaviour, IInteractable, IWorkingPoint
+public class Upgradable : WorkingPoint
 {
     [SerializeField] private GameObject buildingObject;
     [SerializeField] private Sprite startingSprite;
     [SerializeField] private bool isStartingFromNothing;
     [SerializeField] private UpgradeStage[] upgradeStages;
     [SerializeField] private UnityEvent onUpgradeStarted;
-    [SerializeField] private UnityEvent onUpgradeEnded;
-    [SerializeField] private float workingPlaceOffset;
     private GameObject _building;
     private bool _needRepairing = false;
     private bool _isBroken = false;
@@ -24,8 +23,7 @@ public class Upgradable : MonoBehaviour, IInteractable, IWorkingPoint
     private int _orderInLayer;
     private PawnManager _pawnManager;
     private ConstructionTypes _constructionType;
-    private InventoryHandler _playerInventoryHandler;
-
+    
     private void Awake()
     {
         _orderInLayer = buildingObject.GetComponent<SpriteRenderer>().sortingOrder;
@@ -42,7 +40,7 @@ public class Upgradable : MonoBehaviour, IInteractable, IWorkingPoint
         }
     }
 
-    public void StartWork(Pawn pawn)
+    public override void StartWork(Pawn pawn)
     {
         if(_constructionType == ConstructionTypes.Repair)
         {
@@ -58,27 +56,7 @@ public class Upgradable : MonoBehaviour, IInteractable, IWorkingPoint
         }
     }
 
-    public GameObject GetWorkingPlace()
-    {
-        return gameObject;
-    }
-
-    public WorkTypes GetWorkType()
-    {
-        return WorkTypes.Building;
-    }
-
-    public UnityEvent GetOnWorkEndedEvent()
-    {
-        return onUpgradeEnded;
-    }
-
-    public float GetWorkingPlaceOffset()
-    {
-        return workingPlaceOffset;
-    }
-
-    public void Invoke(GameObject player, InteractionUI interactionUI)
+    public override void Invoke(GameObject player, InteractionUI interactionUI)
     {
         if(_isProcessing) return;
         _playerInventoryHandler = player.GetComponent<InventoryHandler>();
@@ -115,7 +93,7 @@ public class Upgradable : MonoBehaviour, IInteractable, IWorkingPoint
         }
     }
 
-    public void OnExitedObject(GameObject player, InteractionUI interactionUI)
+    public override void OnExitedObject(GameObject player, InteractionUI interactionUI)
     {
         interactionUI.RemoveText(interactionUI.TextOnTop, gameObject.name);
         if(_needRepairing)
@@ -130,7 +108,7 @@ public class Upgradable : MonoBehaviour, IInteractable, IWorkingPoint
         }
     }
 
-    public void OnNearObject(GameObject player, InteractionUI interactionUI)
+    public override void OnNearObject(GameObject player, InteractionUI interactionUI)
     {
         interactionUI.SetText(interactionUI.TextOnTop, gameObject.name);
         if(_needRepairing)
@@ -183,14 +161,15 @@ public class Upgradable : MonoBehaviour, IInteractable, IWorkingPoint
         _building.GetComponent<BreakingHealth>().onStageDowngraded.AddListener(SetToShouldBeRepaired);
         _needRepairing=false;
         _isBroken = false;
+        onWorkEnded.Invoke();
         _isProcessing = false;
     }
 
     public IEnumerator MoveToNextLevel()
     {
         _isProcessing = true;
-        onUpgradeStarted?.Invoke();
         buildingObject.SetActive(true);
+        onUpgradeStarted?.Invoke();
         if(_currentLevel >= 0) 
             Destroy(_building);
         UpgradeStage stage = upgradeStages[_currentLevel+1];
@@ -208,7 +187,7 @@ public class Upgradable : MonoBehaviour, IInteractable, IWorkingPoint
         buildingObject.SetActive(false);
         _building = ExtentionMethods.InstantiateWithSortingOrder(upgradeStages[_currentLevel].Building, transform, _orderInLayer);
         _building.GetComponent<BreakingHealth>().onStageDowngraded.AddListener(SetToShouldBeRepaired);
-        onUpgradeEnded.Invoke();
+        onWorkEnded.Invoke();
         _isProcessing = false;
     }
 

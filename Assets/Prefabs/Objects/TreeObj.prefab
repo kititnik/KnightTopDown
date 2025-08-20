@@ -213,9 +213,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4e8cfd7b391f4faba7569bde5e91689, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  offset: 0.75
+  workType: 0
+  price:
+    items:
+    - Item: {fileID: 7018433153761699152, guid: e22e498275a7f4169b0998b12a3a2fb9, type: 3}
+      Count: 1
+  onWorkEnded:
+    m_PersistentCalls:
+      m_Calls: []
   damage: 2
   intervalBetweenHits: 0.5
-  workingPlaceOffset: 0.2
 --- !u!58 &3788176320977816415
 CircleCollider2D:
   m_ObjectHideFlags: 0

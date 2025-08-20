@@ -11,7 +11,7 @@ public class Pawn : MonoBehaviour
     [SerializeField] private PawnMovement pawnMovement;
     [SerializeField] private GameObject houseObject;
     private Health _houseObjectHealth;
-    private IWorkingPoint _currentWork;
+    private WorkingPoint _currentWork;
     private Health _enemyHealth;
 
     private void Start()
@@ -35,7 +35,7 @@ public class Pawn : MonoBehaviour
         return pawnState;
     }
 
-    public void AssignWork(IWorkingPoint work)
+    public void AssignWork(WorkingPoint work)
     {
         if(pawnState != PawnState.Walking) return;
         _currentWork = work;

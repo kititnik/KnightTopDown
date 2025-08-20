@@ -5,10 +5,19 @@ public class InventoryHandler : MonoBehaviour
 {
     private Inventory _inventory;
     [SerializeField] private int inventorySize;
+    [SerializeField] private InventoryItem[] startItems;
 
     private void Awake()
     {
         _inventory = new Inventory(inventorySize);
+    }
+
+    private void Start()
+    {
+        foreach (var item in startItems)
+        {
+            AddItem(item.ItemId, item.Count);
+        }
     }
     
     public bool AddItem(int itemId, int count)

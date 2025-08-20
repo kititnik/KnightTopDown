@@ -4,61 +4,31 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class TreeChoppingPlace : MonoBehaviour, IInteractable, IWorkingPoint
+public class TreeChoppingPlace : WorkingPoint 
 {
     [SerializeField] private float damage;
     [SerializeField] private float intervalBetweenHits;
-    [SerializeField] private float workingPlaceOffset;
     private PawnManager _pawnManager;
-    private UnityEvent _onWorkEnded;
     private Health _treeHealth;
     private Hitbox _hitBox;
 
-    private void Start()
+    protected void Start()
     {
+        base.Start();
         _pawnManager = FindObjectOfType<PawnManager>();
-        _onWorkEnded = new UnityEvent();
         _hitBox = GetComponentInChildren<Hitbox>();
         _treeHealth = GetComponent<Health>();
     }
 
-    public UnityEvent GetOnWorkEndedEvent()
+    public override void Invoke(GameObject player, InteractionUI interactionUI)
     {
-        return _onWorkEnded;
-    }
-
-    public GameObject GetWorkingPlace()
-    {
-        return gameObject;
-    }
-
-    public WorkTypes GetWorkType()
-    {
-        return WorkTypes.Chopping;
-    }
-
-    public float GetWorkingPlaceOffset()
-    {
-        return workingPlaceOffset;
-    }
-
-    public void Invoke(GameObject player, InteractionUI interactionUI)
-    {
+        base.Invoke(player, interactionUI);
         _pawnManager.FindWorker(this);
     }
 
-    public void OnExitedObject(GameObject player, InteractionUI interactionUI)
+    public override void StartWork(Pawn pawn)
     {
-        interactionUI.RemoveText(interactionUI.RichTextOnTop, "Tree");
-    }
-
-    public void OnNearObject(GameObject player, InteractionUI interactionUI)
-    {
-        interactionUI.SetText(interactionUI.RichTextOnTop, "Tree");
-    }
-
-    public void StartWork(Pawn pawn)
-    {
+        base.StartWork(pawn);
         _treeHealth.OnBroken?.AddListener(EndWork);
         StartCoroutine(WorkingCo());
     }
@@ -75,6 +45,6 @@ public class TreeChoppingPlace : MonoBehaviour, IInteractable, IWorkingPoint
     private void EndWork()
     {
         StopCoroutine(WorkingCo());
-        _onWorkEnded?.Invoke();
+        onWorkEnded?.Invoke();
     }
 }

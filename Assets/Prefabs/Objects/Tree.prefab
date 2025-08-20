@@ -201,7 +201,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3925426386162065969, guid: 7b70663d7c6874a8f806fa211da64c0c, type: 3}
       propertyPath: m_Name
-      value: TreeObj
+      value: Tree
       objectReference: {fileID: 0}
     - target: {fileID: 4347064918165642106, guid: 7b70663d7c6874a8f806fa211da64c0c, type: 3}
       propertyPath: workingPlaceOffset
